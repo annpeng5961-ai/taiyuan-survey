@@ -5,12 +5,15 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>太原養生會館 滿意度調查</title>
 <style>
-  :root{--pink:#fbd9d6;--pink-d:#b5453d;--blue:#cfe6f5;--blue-d:#2f6f9f;--bg:#faf6ef;--ink:#3a2f26;--gold:#e8b930}
+  :root{--pink:#fbd9d6;--pink-d:#b5453d;--blue:#cfe6f5;--blue-d:#2f6f9f;--bg:#faf6ef;--ink:#3a2f26}
   *{box-sizing:border-box}
-  body{margin:0;font-family:"Microsoft JhengHei",sans-serif;background:var(--bg);color:var(--ink)}
-  header{background:#8a3b32;color:#fff;padding:14px 16px;text-align:center}
+  body{margin:0;font-family:"Microsoft JhengHei","Noto Sans TC","Noto Sans JP","Noto Sans KR",sans-serif;background:var(--bg);color:var(--ink)}
+  header{background:#8a3b32;color:#fff;padding:12px 16px;text-align:center;position:relative}
   header h1{margin:0;font-size:22px}
   header .date{margin-top:4px;font-size:18px;color:#ffe9a8}
+  .langs{display:flex;justify-content:center;gap:6px;margin-top:10px}
+  .langs button{padding:6px 14px;font-size:15px;border-radius:16px;border:1px solid #ffe9a8;background:transparent;color:#ffe9a8;cursor:pointer}
+  .langs button.on{background:#ffe9a8;color:#8a3b32;font-weight:bold}
   nav{display:flex;background:#fff;border-bottom:2px solid #ddd}
   nav button{flex:1;padding:14px 4px;font-size:17px;border:0;background:none;cursor:pointer}
   nav button.on{border-bottom:4px solid #8a3b32;font-weight:bold;color:#8a3b32}
@@ -31,6 +34,7 @@
   .rates button small{display:block;font-size:11px;color:#666}
   .pink .rates button.sel{background:var(--pink-d);color:#fff}
   .blue .rates button.sel{background:var(--blue-d);color:#fff}
+  .rates button.sel small{color:#fff}
   .big{width:100%;padding:16px;font-size:20px;background:#8a3b32;color:#fff;border:0;border-radius:10px;cursor:pointer}
   .big:disabled{background:#aaa}
   .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
@@ -47,51 +51,52 @@
 </head>
 <body>
 <header>
-  <h1>太原養生會館　滿意度調查</h1>
+  <h1 data-i18n="title"></h1>
   <div class="date" id="today"></div>
+  <div class="langs" id="langs"></div>
 </header>
 <nav>
-  <button data-t="vote" class="on">評分</button>
-  <button data-t="setup">今日編號設定</button>
-  <button data-t="stat">月統計／下載</button>
+  <button data-t="vote" class="on" data-i18n="navVote"></button>
+  <button data-t="setup" data-i18n="navSetup"></button>
+  <button data-t="stat" data-i18n="navStat"></button>
 </nav>
 <main>
 
 <!-- 評分 -->
 <section id="vote" class="on">
-  <div class="msg" id="okmsg">謝謝您的評比！</div>
+  <div class="msg" id="okmsg" data-i18n="thanks"></div>
   <div class="card">
-    <h2>① 請選擇師傅編號</h2>
+    <h2 data-i18n="step1"></h2>
     <div class="chips" id="voteChips"></div>
-    <div class="hint" id="noToday" style="display:none">今天還沒有設定編號，請先到「今日編號設定」。</div>
+    <div class="hint" id="noToday" style="display:none" data-i18n="noToday"></div>
   </div>
   <div class="card pink">
-    <h2>② 服務品質／接客態度（粉紅卡）</h2>
+    <h2 data-i18n="step2"></h2>
     <div class="rates" id="r1"></div>
   </div>
   <div class="card blue">
-    <h2>③ 技術評比（藍卡）</h2>
+    <h2 data-i18n="step3"></h2>
     <div class="rates" id="r2"></div>
   </div>
-  <button class="big" id="submit" disabled>送出評分</button>
+  <button class="big" id="submit" disabled data-i18n="submit"></button>
 </section>
 
 <!-- 今日設定 -->
 <section id="setup">
   <div class="card">
-    <h2>今天上場的師傅編號（1~99）</h2>
+    <h2 data-i18n="setupTitle"></h2>
     <div class="row">
-      <input id="numIn" type="number" min="1" max="99" placeholder="輸入編號" style="width:140px">
-      <button class="sm fill" id="addNum">新增</button>
+      <input id="numIn" type="number" min="1" max="99" data-i18n-ph="numPh" style="width:140px">
+      <button class="sm fill" id="addNum" data-i18n="add"></button>
     </div>
-    <p class="hint">也可一次輸入多個，用逗號或空格分開，例如：11,5,33,66,88</p>
+    <p class="hint" data-i18n="multiHint"></p>
     <div class="chips" id="todayChips" style="margin-top:10px"></div>
     <div class="row" style="margin-top:12px">
-      <button class="sm" id="clearToday">清除今日全部編號</button>
+      <button class="sm" id="clearToday" data-i18n="clearToday"></button>
     </div>
   </div>
   <div class="card">
-    <h2>快速挑選（點選＝加入／移除）</h2>
+    <h2 data-i18n="quick"></h2>
     <div class="chips" id="grid" style="gap:5px"></div>
   </div>
 </section>
@@ -99,23 +104,23 @@
 <!-- 統計 -->
 <section id="stat">
   <div class="card">
-    <h2>每月統計</h2>
+    <h2 data-i18n="statTitle"></h2>
     <div class="row">
       <input type="month" id="month">
-      <button class="sm fill" id="dlSummary">下載統計 CSV</button>
-      <button class="sm" id="dlRaw">下載明細 CSV</button>
+      <button class="sm fill" id="dlSummary" data-i18n="dlSummary"></button>
+      <button class="sm" id="dlRaw" data-i18n="dlRaw"></button>
     </div>
-    <p class="hint">分數：極優5、優4、普通3、差2、極差1。CSV 可用 Excel 開啟。</p>
+    <p class="hint" data-i18n="scoreHint"></p>
   </div>
   <div class="card scroll">
     <table id="tbl"></table>
   </div>
   <div class="card">
-    <h2>資料備份</h2>
-    <p class="hint">資料存在這台電腦的瀏覽器裡。換電腦或清除瀏覽紀錄前，請先備份。</p>
+    <h2 data-i18n="backupTitle"></h2>
+    <p class="hint" data-i18n="backupHint"></p>
     <div class="row">
-      <button class="sm" id="bk">下載備份檔</button>
-      <button class="sm" id="rs">還原備份</button>
+      <button class="sm" id="bk" data-i18n="bk"></button>
+      <button class="sm" id="rs" data-i18n="rs"></button>
       <input type="file" id="rsFile" accept=".json" style="display:none">
     </div>
   </div>
@@ -123,24 +128,106 @@
 
 </main>
 <script>
-const LV=[["極優",5,"素晴らしい"],["優",4,"よかった"],["普通",3,"まあまあ"],["差",2,"よくなかった"],["極差",1,"下手"]];
+const I18N={
+ zh:{label:"中文",locale:"zh-TW",htmlLang:"zh-Hant",
+  title:"太原養生會館　滿意度調查",navVote:"評分",navSetup:"今日編號設定",navStat:"月統計／下載",
+  thanks:"謝謝您的評比！",step1:"① 請選擇師傅編號",noToday:"今天還沒有設定編號，請先到「今日編號設定」。",
+  step2:"② 服務品質／接客態度（粉紅卡）",step3:"③ 技術評比（藍卡）",submit:"送出評分",
+  setupTitle:"今天上場的師傅編號（1~99）",numPh:"輸入編號",add:"新增",
+  multiHint:"也可一次輸入多個，用逗號或空格分開，例如：11,5,33,66,88",notSet:"今天尚未設定",
+  clearToday:"清除今日全部編號",quick:"快速挑選（點選＝加入／移除）",statTitle:"每月統計",
+  dlSummary:"下載統計 CSV",dlRaw:"下載明細 CSV",scoreHint:"分數：極優5、優4、普通3、差2、極差1。CSV 可用 Excel 開啟。",
+  backupTitle:"資料備份",backupHint:"資料存在這台裝置的瀏覽器裡。換裝置或清除瀏覽紀錄前，請先備份。",bk:"下載備份檔",rs:"還原備份",
+  levels:["極優","優","普通","差","極差"],
+  hNo:"編號",hDays:"上場天數",hCnt:"評分筆數",hAvgS:"服務平均",hAvgK:"技術平均",pS:"服務",pK:"技術",
+  rDate:"日期",rNo:"編號",rS:"服務品質",rK:"技術評比",rTime:"送出時間",
+  noData:"這個月還沒有資料",noMonth:"這個月沒有資料",badNum:"請輸入 1~99 的編號",
+  confirmClear:"確定清除今天全部編號？（已送出的評分不會刪除）",confirmRestore:"還原會覆蓋目前這台裝置上的資料，確定嗎？",
+  restored:"還原完成",badFile:"備份檔格式不對",fSum:"太原滿意度統計",fRaw:"太原滿意度明細",fBk:"太原備份"},
+ en:{label:"English",locale:"en-US",htmlLang:"en",
+  title:"Taiyuan Wellness Spa – Satisfaction Survey",navVote:"Rate",navSetup:"Today's Staff",navStat:"Monthly / Download",
+  thanks:"Thank you for your feedback!",step1:"① Select the masseuse number",noToday:"No numbers set for today. Please go to \"Today's Staff\" first.",
+  step2:"② Service quality / attitude (Pink card)",step3:"③ Massage skill (Blue card)",submit:"Submit",
+  setupTitle:"Masseuse numbers on duty today (1–99)",numPh:"Enter number",add:"Add",
+  multiHint:"You can enter several at once, separated by commas or spaces, e.g. 11,5,33,66,88",notSet:"Not set for today",
+  clearToday:"Clear all of today's numbers",quick:"Quick pick (tap to add / remove)",statTitle:"Monthly statistics",
+  dlSummary:"Download summary CSV",dlRaw:"Download details CSV",scoreHint:"Scores: Excellent 5, Good 4, Average 3, Poor 2, Very poor 1. CSV opens in Excel.",
+  backupTitle:"Backup",backupHint:"Data is stored in this device's browser. Please back up before changing devices or clearing browsing data.",bk:"Download backup",rs:"Restore backup",
+  levels:["Excellent","Good","Average","Poor","Very poor"],
+  hNo:"No.",hDays:"Days on duty",hCnt:"Ratings",hAvgS:"Service avg",hAvgK:"Skill avg",pS:"Service",pK:"Skill",
+  rDate:"Date",rNo:"No.",rS:"Service",rK:"Skill",rTime:"Submitted at",
+  noData:"No data for this month",noMonth:"No data for this month",badNum:"Please enter a number from 1 to 99",
+  confirmClear:"Clear all of today's numbers? (Submitted ratings are kept)",confirmRestore:"Restoring will overwrite the data on this device. Continue?",
+  restored:"Restore complete",badFile:"Invalid backup file",fSum:"Taiyuan_summary",fRaw:"Taiyuan_details",fBk:"Taiyuan_backup"},
+ ja:{label:"日本語",locale:"ja-JP",htmlLang:"ja",
+  title:"太原養生会館　満足度調査",navVote:"評価",navSetup:"本日の番号設定",navStat:"月間集計／ダウンロード",
+  thanks:"ご評価ありがとうございました！",step1:"① マッサージ師の番号を選んでください",noToday:"本日の番号が未設定です。先に「本日の番号設定」へ進んでください。",
+  step2:"② サービス品質／接客態度（ピンクカード）",step3:"③ マッサージ師の技術（ブルーカード）",submit:"送信",
+  setupTitle:"本日出勤のマッサージ師の番号（1〜99）",numPh:"番号を入力",add:"追加",
+  multiHint:"カンマまたはスペース区切りで複数入力できます。例：11,5,33,66,88",notSet:"本日は未設定です",
+  clearToday:"本日の番号をすべて消す",quick:"かんたん選択（タップで追加／削除）",statTitle:"月間集計",
+  dlSummary:"集計CSVをダウンロード",dlRaw:"明細CSVをダウンロード",scoreHint:"点数：最高5、良い4、普通3、悪い2、最悪1。CSVはExcelで開けます。",
+  backupTitle:"バックアップ",backupHint:"データはこの端末のブラウザに保存されています。端末の変更や履歴の削除の前にバックアップしてください。",bk:"バックアップをダウンロード",rs:"バックアップを復元",
+  levels:["最高","良い","普通","悪い","最悪"],
+  hNo:"番号",hDays:"出勤日数",hCnt:"評価件数",hAvgS:"サービス平均",hAvgK:"技術平均",pS:"サービス",pK:"技術",
+  rDate:"日付",rNo:"番号",rS:"サービス品質",rK:"技術評価",rTime:"送信時刻",
+  noData:"今月のデータはありません",noMonth:"今月のデータはありません",badNum:"1〜99の番号を入力してください",
+  confirmClear:"本日の番号をすべて消しますか？（送信済みの評価は消えません）",confirmRestore:"この端末のデータが上書きされます。よろしいですか？",
+  restored:"復元しました",badFile:"バックアップファイルの形式が正しくありません",fSum:"太原満足度集計",fRaw:"太原満足度明細",fBk:"太原バックアップ"},
+ ko:{label:"한국어",locale:"ko-KR",htmlLang:"ko",
+  title:"타이위안 양생회관　만족도 조사",navVote:"평가",navSetup:"오늘 번호 설정",navStat:"월간 통계／다운로드",
+  thanks:"평가해 주셔서 감사합니다!",step1:"① 마사지사 번호를 선택하세요",noToday:"오늘 번호가 설정되지 않았습니다. 먼저 「오늘 번호 설정」으로 가세요.",
+  step2:"② 서비스 품질／접객 태도 (분홍 카드)",step3:"③ 마사지 기술 (파란 카드)",submit:"제출",
+  setupTitle:"오늘 근무하는 마사지사 번호 (1~99)",numPh:"번호 입력",add:"추가",
+  multiHint:"쉼표나 공백으로 구분해 여러 개를 한 번에 입력할 수 있습니다. 예: 11,5,33,66,88",notSet:"오늘은 설정되지 않았습니다",
+  clearToday:"오늘 번호 모두 지우기",quick:"빠른 선택 (눌러서 추가／삭제)",statTitle:"월간 통계",
+  dlSummary:"통계 CSV 다운로드",dlRaw:"상세 CSV 다운로드",scoreHint:"점수: 최고 5, 좋음 4, 보통 3, 나쁨 2, 최악 1. CSV는 Excel로 열 수 있습니다.",
+  backupTitle:"백업",backupHint:"데이터는 이 기기의 브라우저에 저장됩니다. 기기를 바꾸거나 기록을 지우기 전에 백업하세요.",bk:"백업 파일 다운로드",rs:"백업 복원",
+  levels:["최고","좋음","보통","나쁨","최악"],
+  hNo:"번호",hDays:"근무일수",hCnt:"평가 건수",hAvgS:"서비스 평균",hAvgK:"기술 평균",pS:"서비스",pK:"기술",
+  rDate:"날짜",rNo:"번호",rS:"서비스 품질",rK:"기술 평가",rTime:"제출 시간",
+  noData:"이번 달 데이터가 없습니다",noMonth:"이번 달 데이터가 없습니다",badNum:"1~99 사이의 번호를 입력하세요",
+  confirmClear:"오늘 번호를 모두 지울까요? (제출된 평가는 삭제되지 않습니다)",confirmRestore:"이 기기의 데이터를 덮어씁니다. 계속할까요?",
+  restored:"복원 완료",badFile:"백업 파일 형식이 올바르지 않습니다",fSum:"태원만족도통계",fRaw:"태원만족도상세",fBk:"태원백업"}
+};
+const LV_SCORE=[5,4,3,2,1];
 const $=s=>document.querySelector(s);
 const pad=n=>String(n).padStart(2,"0");
 const dstr=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
-let KEY_D="taiyuan_days", KEY_R="taiyuan_records";
+const KEY_D="taiyuan_days", KEY_R="taiyuan_records", KEY_L="taiyuan_lang";
 const load=(k,def)=>{try{return JSON.parse(localStorage.getItem(k))||def}catch(e){return def}};
 let days=load(KEY_D,{});       // {"2026-11-09":[11,5,...]}
 let recs=load(KEY_R,[]);       // [{date,no,service,skill,time}]
-const save=()=>{localStorage.setItem(KEY_D,JSON.stringify(days));localStorage.setItem(KEY_R,JSON.stringify(recs))};
+const save=()=>{try{localStorage.setItem(KEY_D,JSON.stringify(days));localStorage.setItem(KEY_R,JSON.stringify(recs))}catch(e){}};
+
+let lang="zh";
+try{const s=localStorage.getItem(KEY_L);if(s&&I18N[s])lang=s}catch(e){}
+const T=()=>I18N[lang];
 
 let today=dstr(new Date());
-const wk="日一二三四五六";
 function showDate(){
   const d=new Date();today=dstr(d);
-  $("#today").textContent=`${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日（星期${wk[d.getDay()]}）`;
+  $("#today").textContent=d.toLocaleDateString(T().locale,{year:"numeric",month:"long",day:"numeric",weekday:"long"});
 }
-showDate();
 const todayList=()=>(days[today]||[]).slice().sort((a,b)=>a-b);
+
+// 語言
+function buildLangs(){
+  const c=$("#langs");c.innerHTML="";
+  Object.keys(I18N).forEach(k=>{
+    const b=document.createElement("button");b.textContent=I18N[k].label;b.className=k===lang?"on":"";
+    b.onclick=()=>{lang=k;try{localStorage.setItem(KEY_L,k)}catch(e){}applyLang()};
+    c.appendChild(b);
+  });
+}
+function applyLang(){
+  const t=T();
+  document.documentElement.lang=t.htmlLang;
+  document.title=t.title;
+  document.querySelectorAll("[data-i18n]").forEach(e=>e.textContent=t[e.dataset.i18n]);
+  document.querySelectorAll("[data-i18n-ph]").forEach(e=>e.placeholder=t[e.dataset.i18nPh]);
+  buildLangs();showDate();render();
+}
 
 // 分頁
 document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{
@@ -153,11 +240,12 @@ document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{
 let selNo=null,s1=null,s2=null;
 function buildRates(el,get,set){
   el.innerHTML="";
-  LV.forEach(l=>{
+  const lv=T().levels;
+  LV_SCORE.forEach((sc,i)=>{
     const b=document.createElement("button");
-    b.innerHTML=`${l[0]}<small>${l[2]}</small>`;
-    b.classList.toggle("sel",get()===l[1]);
-    b.onclick=()=>{set(l[1]);renderVote()};
+    b.textContent=lv[i];
+    b.classList.toggle("sel",get()===sc);
+    b.onclick=()=>{set(sc);renderVote()};
     el.appendChild(b);
   });
 }
@@ -184,7 +272,7 @@ $("#submit").onclick=()=>{
 function setToday(arr){days[today]=[...new Set(arr)].sort((a,b)=>a-b);if(!days[today].length)delete days[today];save();render()}
 function renderSetup(){
   const list=todayList();
-  const c=$("#todayChips");c.innerHTML=list.length?"":'<span class="hint">今天尚未設定</span>';
+  const c=$("#todayChips");c.innerHTML=list.length?"":`<span class="hint">${T().notSet}</span>`;
   list.forEach(n=>{
     const b=document.createElement("div");b.className="chip";b.innerHTML=`${n}<span class="x">✕</span>`;
     b.onclick=()=>setToday(list.filter(x=>x!==n));c.appendChild(b);
@@ -198,11 +286,11 @@ function renderSetup(){
 }
 $("#addNum").onclick=()=>{
   const nums=$("#numIn").value.split(/[\s,，、]+/).map(Number).filter(n=>Number.isInteger(n)&&n>=1&&n<=99);
-  if(!nums.length){alert("請輸入 1~99 的編號");return}
+  if(!nums.length){alert(T().badNum);return}
   setToday([...todayList(),...nums]);$("#numIn").value="";
 };
 $("#numIn").addEventListener("keydown",e=>{if(e.key==="Enter")$("#addNum").click()});
-$("#clearToday").onclick=()=>{if(confirm("確定清除今天全部編號？（已送出的評分不會刪除）"))setToday([])};
+$("#clearToday").onclick=()=>{if(confirm(T().confirmClear))setToday([])};
 
 // 統計
 $("#month").value=today.slice(0,7);
@@ -214,15 +302,18 @@ function summary(){
   });
   return Object.values(map).sort((a,b)=>a.no-b.no);
 }
-const head=["編號","上場天數","評分筆數","服務平均","技術平均","服務極優","服務優","服務普通","服務差","服務極差","技術極優","技術優","技術普通","技術差","技術極差"];
+function head(){
+  const t=T();
+  return [t.hNo,t.hDays,t.hCnt,t.hAvgS,t.hAvgK,...t.levels.map(l=>`${t.pS} ${l}`),...t.levels.map(l=>`${t.pK} ${l}`)];
+}
 function rows(){
   return summary().map(o=>[o.no,o.days.size,o.n,(o.a/o.n).toFixed(2),(o.b/o.n).toFixed(2),
     o.d1[5],o.d1[4],o.d1[3],o.d1[2],o.d1[1],o.d2[5],o.d2[4],o.d2[3],o.d2[2],o.d2[1]]);
 }
 function renderStat(){
-  const r=rows();
-  $("#tbl").innerHTML="<tr>"+head.map(h=>`<th>${h}</th>`).join("")+"</tr>"+
-    (r.length?r.map(x=>"<tr>"+x.map(v=>`<td>${v}</td>`).join("")+"</tr>").join(""):`<tr><td colspan="${head.length}">這個月還沒有資料</td></tr>`);
+  const r=rows(),h=head();
+  $("#tbl").innerHTML="<tr>"+h.map(x=>`<th>${x}</th>`).join("")+"</tr>"+
+    (r.length?r.map(x=>"<tr>"+x.map(v=>`<td>${v}</td>`).join("")+"</tr>").join(""):`<tr><td colspan="${h.length}">${T().noData}</td></tr>`);
 }
 $("#month").onchange=renderStat;
 function dl(name,text,type="text/csv"){
@@ -232,31 +323,31 @@ function dl(name,text,type="text/csv"){
 }
 const csv=a=>a.map(r=>r.join(",")).join("\r\n");
 $("#dlSummary").onclick=()=>{
-  const r=rows();if(!r.length){alert("這個月沒有資料");return}
-  dl(`太原滿意度統計_${$("#month").value}.csv`,csv([head,...r]));
+  const r=rows();if(!r.length){alert(T().noMonth);return}
+  dl(`${T().fSum}_${$("#month").value}.csv`,csv([head(),...r]));
 };
 $("#dlRaw").onclick=()=>{
   const m=$("#month").value;const r=recs.filter(x=>x.date.startsWith(m));
-  if(!r.length){alert("這個月沒有資料");return}
-  const name=v=>LV.find(l=>l[1]===v)[0];
-  dl(`太原滿意度明細_${m}.csv`,csv([["日期","編號","服務品質","技術評比","送出時間"],
-    ...r.map(x=>[x.date,x.no,name(x.service),name(x.skill),new Date(x.time).toLocaleString("zh-TW")])]));
+  if(!r.length){alert(T().noMonth);return}
+  const t=T();const name=v=>t.levels[LV_SCORE.indexOf(v)];
+  dl(`${t.fRaw}_${m}.csv`,csv([[t.rDate,t.rNo,t.rS,t.rK,t.rTime],
+    ...r.map(x=>[x.date,x.no,name(x.service),name(x.skill),new Date(x.time).toLocaleString(t.locale).replace(/,/g," ")])]));
 };
 // 備份
-$("#bk").onclick=()=>dl(`太原備份_${today}.json`,JSON.stringify({days,recs}),"application/json");
+$("#bk").onclick=()=>dl(`${T().fBk}_${today}.json`,JSON.stringify({days,recs}),"application/json");
 $("#rs").onclick=()=>$("#rsFile").click();
 $("#rsFile").onchange=e=>{
   const f=e.target.files[0];if(!f)return;
   const rd=new FileReader();rd.onload=()=>{
     try{const o=JSON.parse(rd.result.replace(/^﻿/,""));
-      if(!confirm("還原會覆蓋目前這台電腦上的資料，確定嗎？"))return;
-      days=o.days||{};recs=o.recs||[];save();render();alert("還原完成")}
-    catch(err){alert("備份檔格式不對")}
+      if(!confirm(T().confirmRestore))return;
+      days=o.days||{};recs=o.recs||[];save();render();alert(T().restored)}
+    catch(err){alert(T().badFile)}
   };rd.readAsText(f);
 };
 
 function render(){renderVote();renderSetup();renderStat()}
-render();
+applyLang();
 </script>
 </body>
 </html>
