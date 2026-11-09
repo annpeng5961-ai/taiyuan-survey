@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>太原養生會館 滿意度調查</title>
+<style>
+  :root{--pink:#fbd9d6;--pink-d:#b5453d;--blue:#cfe6f5;--blue-d:#2f6f9f;--bg:#faf6ef;--ink:#3a2f26;--gold:#e8b930}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Microsoft JhengHei",sans-serif;background:var(--bg);color:var(--ink)}
+  header{background:#8a3b32;color:#fff;padding:14px 16px;text-align:center}
+  header h1{margin:0;font-size:22px}
+  header .date{margin-top:4px;font-size:18px;color:#ffe9a8}
+  nav{display:flex;background:#fff;border-bottom:2px solid #ddd}
+  nav button{flex:1;padding:14px 4px;font-size:17px;border:0;background:none;cursor:pointer}
+  nav button.on{border-bottom:4px solid #8a3b32;font-weight:bold;color:#8a3b32}
+  main{max-width:820px;margin:auto;padding:14px}
+  section{display:none}
+  section.on{display:block}
+  .card{background:#fff;border-radius:10px;padding:14px;margin-bottom:14px;box-shadow:0 1px 4px #0002}
+  h2{margin:0 0 10px;font-size:19px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{padding:10px 16px;border-radius:24px;border:2px solid #8a3b32;background:#fff;font-size:20px;cursor:pointer}
+  .chip.sel{background:#8a3b32;color:#fff}
+  .chip .x{margin-left:8px;color:#c33;font-weight:bold}
+  .chip.sel .x{color:#ffd}
+  .pink{background:var(--pink)} .blue{background:var(--blue)}
+  .pink h2{color:var(--pink-d)} .blue h2{color:var(--blue-d)}
+  .rates{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+  .rates button{padding:12px 2px;font-size:17px;border-radius:8px;border:2px solid #0003;background:#fff;cursor:pointer}
+  .rates button small{display:block;font-size:11px;color:#666}
+  .pink .rates button.sel{background:var(--pink-d);color:#fff}
+  .blue .rates button.sel{background:var(--blue-d);color:#fff}
+  .big{width:100%;padding:16px;font-size:20px;background:#8a3b32;color:#fff;border:0;border-radius:10px;cursor:pointer}
+  .big:disabled{background:#aaa}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  input,select{font-size:18px;padding:8px;border-radius:6px;border:1px solid #999}
+  button.sm{font-size:16px;padding:9px 14px;border-radius:6px;border:1px solid #8a3b32;background:#fff;color:#8a3b32;cursor:pointer}
+  button.sm.fill{background:#8a3b32;color:#fff}
+  table{width:100%;border-collapse:collapse;font-size:15px}
+  th,td{border:1px solid #ccc;padding:6px;text-align:center}
+  th{background:#f0e6d6}
+  .msg{padding:10px;border-radius:8px;background:#e5f5e0;margin-bottom:10px;display:none}
+  .hint{color:#777;font-size:14px}
+  .scroll{overflow-x:auto}
+</style>
+</head>
+<body>
+<header>
+  <h1>太原養生會館　滿意度調查</h1>
+  <div class="date" id="today"></div>
+</header>
+<nav>
+  <button data-t="vote" class="on">評分</button>
+  <button data-t="setup">今日編號設定</button>
+  <button data-t="stat">月統計／下載</button>
+</nav>
+<main>
+
+<!-- 評分 -->
+<section id="vote" class="on">
+  <div class="msg" id="okmsg">謝謝您的評比！</div>
+  <div class="card">
+    <h2>① 請選擇師傅編號</h2>
+    <div class="chips" id="voteChips"></div>
+    <div class="hint" id="noToday" style="display:none">今天還沒有設定編號，請先到「今日編號設定」。</div>
+  </div>
+  <div class="card pink">
+    <h2>② 服務品質／接客態度（粉紅卡）</h2>
+    <div class="rates" id="r1"></div>
+  </div>
+  <div class="card blue">
+    <h2>③ 技術評比（藍卡）</h2>
+    <div class="rates" id="r2"></div>
+  </div>
+  <button class="big" id="submit" disabled>送出評分</button>
+</section>
+
+<!-- 今日設定 -->
+<section id="setup">
+  <div class="card">
+    <h2>今天上場的師傅編號（1~99）</h2>
+    <div class="row">
+      <input id="numIn" type="number" min="1" max="99" placeholder="輸入編號" style="width:140px">
+      <button class="sm fill" id="addNum">新增</button>
+    </div>
+    <p class="hint">也可一次輸入多個，用逗號或空格分開，例如：11,5,33,66,88</p>
+    <div class="chips" id="todayChips" style="margin-top:10px"></div>
+    <div class="row" style="margin-top:12px">
+      <button class="sm" id="clearToday">清除今日全部編號</button>
+    </div>
+  </div>
+  <div class="card">
+    <h2>快速挑選（點選＝加入／移除）</h2>
+    <div class="chips" id="grid" style="gap:5px"></div>
+  </div>
+</section>
+
+<!-- 統計 -->
+<section id="stat">
+  <div class="card">
+    <h2>每月統計</h2>
+    <div class="row">
+      <input type="month" id="month">
+      <button class="sm fill" id="dlSummary">下載統計 CSV</button>
+      <button class="sm" id="dlRaw">下載明細 CSV</button>
+    </div>
+    <p class="hint">分數：極優5、優4、普通3、差2、極差1。CSV 可用 Excel 開啟。</p>
+  </div>
+  <div class="card scroll">
+    <table id="tbl"></table>
+  </div>
+  <div class="card">
+    <h2>資料備份</h2>
+    <p class="hint">資料存在這台電腦的瀏覽器裡。換電腦或清除瀏覽紀錄前，請先備份。</p>
+    <div class="row">
+      <button class="sm" id="bk">下載備份檔</button>
+      <button class="sm" id="rs">還原備份</button>
+      <input type="file" id="rsFile" accept=".json" style="display:none">
+    </div>
+  </div>
+</section>
+
+</main>
+<script>
+const LV=[["極優",5,"素晴らしい"],["優",4,"よかった"],["普通",3,"まあまあ"],["差",2,"よくなかった"],["極差",1,"下手"]];
+const $=s=>document.querySelector(s);
+const pad=n=>String(n).padStart(2,"0");
+const dstr=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+let KEY_D="taiyuan_days", KEY_R="taiyuan_records";
+const load=(k,def)=>{try{return JSON.parse(localStorage.getItem(k))||def}catch(e){return def}};
+let days=load(KEY_D,{});       // {"2026-11-09":[11,5,...]}
+let recs=load(KEY_R,[]);       // [{date,no,service,skill,time}]
+const save=()=>{localStorage.setItem(KEY_D,JSON.stringify(days));localStorage.setItem(KEY_R,JSON.stringify(recs))};
+
+let today=dstr(new Date());
+const wk="日一二三四五六";
+function showDate(){
+  const d=new Date();today=dstr(d);
+  $("#today").textContent=`${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日（星期${wk[d.getDay()]}）`;
+}
+showDate();
+const todayList=()=>(days[today]||[]).slice().sort((a,b)=>a-b);
+
+// 分頁
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("on",x===b));
+  document.querySelectorAll("section").forEach(s=>s.classList.toggle("on",s.id===b.dataset.t));
+  showDate();render();
+});
+
+// 評分
+let selNo=null,s1=null,s2=null;
+function buildRates(el,get,set){
+  el.innerHTML="";
+  LV.forEach(l=>{
+    const b=document.createElement("button");
+    b.innerHTML=`${l[0]}<small>${l[2]}</small>`;
+    b.classList.toggle("sel",get()===l[1]);
+    b.onclick=()=>{set(l[1]);renderVote()};
+    el.appendChild(b);
+  });
+}
+function renderVote(){
+  const list=todayList();
+  $("#noToday").style.display=list.length?"none":"block";
+  const c=$("#voteChips");c.innerHTML="";
+  list.forEach(n=>{
+    const b=document.createElement("div");b.className="chip"+(n===selNo?" sel":"");b.textContent=n;
+    b.onclick=()=>{selNo=n;renderVote()};c.appendChild(b);
+  });
+  buildRates($("#r1"),()=>s1,v=>s1=v);
+  buildRates($("#r2"),()=>s2,v=>s2=v);
+  $("#submit").disabled=!(selNo&&s1&&s2);
+}
+$("#submit").onclick=()=>{
+  recs.push({date:today,no:selNo,service:s1,skill:s2,time:new Date().toISOString()});
+  save();selNo=s1=s2=null;renderVote();
+  const m=$("#okmsg");m.style.display="block";setTimeout(()=>m.style.display="none",2500);
+  window.scrollTo(0,0);
+};
+
+// 今日設定
+function setToday(arr){days[today]=[...new Set(arr)].sort((a,b)=>a-b);if(!days[today].length)delete days[today];save();render()}
+function renderSetup(){
+  const list=todayList();
+  const c=$("#todayChips");c.innerHTML=list.length?"":'<span class="hint">今天尚未設定</span>';
+  list.forEach(n=>{
+    const b=document.createElement("div");b.className="chip";b.innerHTML=`${n}<span class="x">✕</span>`;
+    b.onclick=()=>setToday(list.filter(x=>x!==n));c.appendChild(b);
+  });
+  const g=$("#grid");g.innerHTML="";
+  for(let n=1;n<=99;n++){
+    const b=document.createElement("div");b.className="chip"+(list.includes(n)?" sel":"");
+    b.style.cssText="padding:6px 0;width:44px;text-align:center;font-size:16px";b.textContent=n;
+    b.onclick=()=>setToday(list.includes(n)?list.filter(x=>x!==n):[...list,n]);g.appendChild(b);
+  }
+}
+$("#addNum").onclick=()=>{
+  const nums=$("#numIn").value.split(/[\s,，、]+/).map(Number).filter(n=>Number.isInteger(n)&&n>=1&&n<=99);
+  if(!nums.length){alert("請輸入 1~99 的編號");return}
+  setToday([...todayList(),...nums]);$("#numIn").value="";
+};
+$("#numIn").addEventListener("keydown",e=>{if(e.key==="Enter")$("#addNum").click()});
+$("#clearToday").onclick=()=>{if(confirm("確定清除今天全部編號？（已送出的評分不會刪除）"))setToday([])};
+
+// 統計
+$("#month").value=today.slice(0,7);
+function summary(){
+  const m=$("#month").value;const map={};
+  recs.filter(r=>r.date.startsWith(m)).forEach(r=>{
+    const o=map[r.no]||(map[r.no]={no:r.no,n:0,a:0,b:0,days:new Set(),d1:[0,0,0,0,0,0],d2:[0,0,0,0,0,0]});
+    o.n++;o.a+=r.service;o.b+=r.skill;o.days.add(r.date);o.d1[r.service]++;o.d2[r.skill]++;
+  });
+  return Object.values(map).sort((a,b)=>a.no-b.no);
+}
+const head=["編號","上場天數","評分筆數","服務平均","技術平均","服務極優","服務優","服務普通","服務差","服務極差","技術極優","技術優","技術普通","技術差","技術極差"];
+function rows(){
+  return summary().map(o=>[o.no,o.days.size,o.n,(o.a/o.n).toFixed(2),(o.b/o.n).toFixed(2),
+    o.d1[5],o.d1[4],o.d1[3],o.d1[2],o.d1[1],o.d2[5],o.d2[4],o.d2[3],o.d2[2],o.d2[1]]);
+}
+function renderStat(){
+  const r=rows();
+  $("#tbl").innerHTML="<tr>"+head.map(h=>`<th>${h}</th>`).join("")+"</tr>"+
+    (r.length?r.map(x=>"<tr>"+x.map(v=>`<td>${v}</td>`).join("")+"</tr>").join(""):`<tr><td colspan="${head.length}">這個月還沒有資料</td></tr>`);
+}
+$("#month").onchange=renderStat;
+function dl(name,text,type="text/csv"){
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob(["﻿"+text],{type:type+";charset=utf-8"}));
+  a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+const csv=a=>a.map(r=>r.join(",")).join("\r\n");
+$("#dlSummary").onclick=()=>{
+  const r=rows();if(!r.length){alert("這個月沒有資料");return}
+  dl(`太原滿意度統計_${$("#month").value}.csv`,csv([head,...r]));
+};
+$("#dlRaw").onclick=()=>{
+  const m=$("#month").value;const r=recs.filter(x=>x.date.startsWith(m));
+  if(!r.length){alert("這個月沒有資料");return}
+  const name=v=>LV.find(l=>l[1]===v)[0];
+  dl(`太原滿意度明細_${m}.csv`,csv([["日期","編號","服務品質","技術評比","送出時間"],
+    ...r.map(x=>[x.date,x.no,name(x.service),name(x.skill),new Date(x.time).toLocaleString("zh-TW")])]));
+};
+// 備份
+$("#bk").onclick=()=>dl(`太原備份_${today}.json`,JSON.stringify({days,recs}),"application/json");
+$("#rs").onclick=()=>$("#rsFile").click();
+$("#rsFile").onchange=e=>{
+  const f=e.target.files[0];if(!f)return;
+  const rd=new FileReader();rd.onload=()=>{
+    try{const o=JSON.parse(rd.result.replace(/^﻿/,""));
+      if(!confirm("還原會覆蓋目前這台電腦上的資料，確定嗎？"))return;
+      days=o.days||{};recs=o.recs||[];save();render();alert("還原完成")}
+    catch(err){alert("備份檔格式不對")}
+  };rd.readAsText(f);
+};
+
+function render(){renderVote();renderSetup();renderStat()}
+render();
+</script>
+</body>
+</html>
